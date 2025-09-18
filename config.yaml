@@ -1,0 +1,23 @@
+weights:
+  emissions: 0.6
+  distance: 0.2
+  biodiversity: 0.2
+
+bounds:
+  base_kgco2e: [0, 10]
+  distance_km: [0, 3000]
+  biodiversity_risk: [0, 1]
+
+grade_bands:
+  - [A, 80]
+  - [B, 60]
+  - [C, 40]
+  - [D, 20]
+  - [E, 0]
+
+meta:
+  method_version: "1.0.0"
+  data_source:
+    agribalyse: "v3.2 (ADEME)"
+    distances: "Base Carbone (estims)"
+    biodiversity: "Poore & Nemecek 2018 (proxy usage sols)"

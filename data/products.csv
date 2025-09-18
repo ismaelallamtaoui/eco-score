@@ -1,4 +1,4 @@
-id,name,base_kgco2e,distance_km,biodiversity_risk
-SKU-001,Pomme de terre 1kg,1.2,180,0.20
-SKU-002,Riz 500g,2.8,9200,0.35
-SKU-003,Tomate 500g,1.5,450,0.50
+id,name,unit,category
+SKU-001,Pomme de terre,kg,fruits-legumes
+SKU-002,Riz,500g,epicerie
+SKU-003,Tomate,500g,fruits-legumes
