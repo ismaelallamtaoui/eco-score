@@ -1,4 +1,4 @@
-gtin,name,brand,category,unit,originCountry,supplierId,lcaRefId
-3012345678901,Yaourt nature 125g,MarqueA,Dairy,unit,FR,SUP001,LCA-Dairy-001
-5412345678902,Steak haché 100g,MarqueB,Beef,unit,FR,SUP002,LCA-Beef-001
-7612345678903,Lentilles 500g,MarqueC,LegumeSec,kg,FR,SUP003,LCA-LegumeSec-001
+id,gtin,name,brand,category,unit,originCountry,supplierId,lcaRefId
+3012345678901,3012345678901,Yaourt nature 125g,MarqueA,Dairy,unit,FR,SUP001,LCA-Dairy-001
+5412345678902,5412345678902,Steak haché 100g,MarqueB,Beef,unit,FR,SUP002,LCA-Beef-001
+7612345678903,7612345678903,Lentilles 500g,MarqueC,LegumeSec,kg,FR,SUP003,LCA-LegumeSec-001
