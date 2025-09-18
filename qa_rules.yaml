@@ -1,0 +1,7 @@
+# Règles QA simples pour bloquer les données aberrantes
+max_values:
+  distance_km: 30000    # > 30 000 km -> KO
+  base_kgco2e: 50       # > 50 kgCO2e / unité -> KO
+ranges:
+  biodiversity_risk: [0, 1]  # doit être entre 0 et 1
+no_missing_columns: true
