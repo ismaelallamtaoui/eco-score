@@ -1,4 +1,4 @@
-id,name,unit,category
-SKU-001,Pomme de terre,kg,fruits-legumes
-SKU-002,Riz,500g,epicerie
-SKU-003,Tomate,500g,fruits-legumes
+gtin,name,brand,category,unit,originCountry,supplierId,lcaRefId
+3012345678901,Yaourt nature 125g,MarqueA,Dairy,unit,FR,SUP001,LCA-Dairy-001
+5412345678902,Steak haché 100g,MarqueB,Beef,unit,FR,SUP002,LCA-Beef-001
+7612345678903,Lentilles 500g,MarqueC,LegumeSec,kg,FR,SUP003,LCA-LegumeSec-001

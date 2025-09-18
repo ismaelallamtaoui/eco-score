@@ -1,0 +1,19 @@
+:root{ --bg:#0b0c10; --fg:#e5e7eb; --card:#111318; --accent:#4ade80; --muted:#9aa3af;}
+*{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
+body{margin:0;background:var(--bg);color:var(--fg)}
+a{color:#93c5fd}
+.container{max-width:960px;margin:0 auto;padding:16px}
+header h1{margin:8px 0}
+nav a{margin-right:12px}
+.card{background:var(--card);padding:16px;border-radius:12px;margin:16px 0;border:1px solid #1f2937}
+table{width:100%;border-collapse:collapse}
+th,td{padding:8px;border-bottom:1px solid #1f2937}
+.controls{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.slider{display:flex;gap:8px;align-items:center;margin:8px 0}
+.badge{padding:2px 8px;border-radius:999px;border:1px solid #1f2937}
+.badge-A{background:#064e3b;color:#d1fae5}
+.badge-B{background:#065f46;color:#d1fae5}
+.badge-C{background:#78350f;color:#fde68a}
+.badge-D{background:#7f1d1d;color:#fee2e2}
+.badge-E{background:#450a0a;color:#fecaca}
+.hint{opacity:.9}

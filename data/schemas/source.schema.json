@@ -1,0 +1,12 @@
+{
+  "$id": "source.schema.json",
+  "type": "object",
+  "properties": {
+    "url": {
+      "type": "string"
+    },
+    "method": {
+      "type": "string"
+    }
+  }
+}

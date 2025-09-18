@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Upload Partenaires — Meta‑Score</title>
+  <link rel="stylesheet" href="../../../public/style.css">
+</head>
+<body>
+<header class="container">
+  <h1>Upload Partenaires</h1>
+  <nav>
+    <a href="../../../">Accueil</a>
+    <a href="../../../docs/">Docs</a>
+  </nav>
+</header>
+
+<main class="container">
+  <section class="card">
+    <h2>Charger un CSV produits</h2>
+    <input type="file" id="file" accept=".csv">
+    <button id="process">Convertir en JSON & vérifier schéma</button>
+    <pre id="out"></pre>
+  </section>
+</main>
+
+<script type="module" src="./upload.js"></script>
+</body>
+</html>

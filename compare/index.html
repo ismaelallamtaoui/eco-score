@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Comparer — Meta‑Score</title>
+  <link rel="stylesheet" href="../public/style.css">
+</head>
+<body>
+<header class="container">
+  <h1>Comparer</h1>
+  <nav>
+    <a href="../">Accueil</a>
+    <a href="../basket/">Panier</a>
+  </nav>
+</header>
+
+<main class="container">
+  <section class="card">
+    <h2>Produits</h2>
+    <div class="controls">
+      <button id="loadDemo">Charger démo</button>
+      <button id="clear">Vider</button>
+      <a id="prefs" class="anchor"></a>
+    </div>
+    <table id="productsTable">
+      <thead><tr>
+        <th>GTIN</th><th>Nom</th><th>Origine</th><th>Score</th><th>Lettre</th><th>Actions</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>Personnaliser mes priorités</h2>
+    <div id="sliders"></div>
+    <p><small>Les préférences sont stockées dans votre navigateur (localStorage).</small></p>
+  </section>
+</main>
+
+<script type="module" src="./compare.js"></script>
+</body>
+</html>

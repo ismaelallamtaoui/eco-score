@@ -1,0 +1,26 @@
+{
+  "$id": "supplier.schema.json",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "country"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "practices": {
+      "type": "string"
+    },
+    "certs": {
+      "type": "string"
+    }
+  }
+}

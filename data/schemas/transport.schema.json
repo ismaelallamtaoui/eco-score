@@ -1,0 +1,7 @@
+{
+  "$id": "transport.schema.json",
+  "type": "array",
+  "items": {
+    "type": "object"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "$id": "product.schema.json",
+  "type": "object",
+  "required": [
+    "gtin",
+    "name",
+    "category",
+    "unit",
+    "originCountry",
+    "supplierId",
+    "lcaRefId"
+  ],
+  "properties": {
+    "gtin": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "brand": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "unit": {
+      "type": "string"
+    },
+    "originCountry": {
+      "type": "string"
+    },
+    "supplierId": {
+      "type": "string"
+    },
+    "lcaRefId": {
+      "type": "string"
+    }
+  }
+}

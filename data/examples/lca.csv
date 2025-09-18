@@ -1,0 +1,4 @@
+ref,category,ghg,water,land,pm,eutro,biodiversity
+LCA-Dairy-001,Dairy,1.8,250,1.2,0.03,0.05,0.4
+LCA-Beef-001,Beef,12.0,500,9.0,0.20,0.30,2.5
+LCA-LegumeSec-001,LegumeSec,0.8,50,0.4,0.01,0.02,0.1

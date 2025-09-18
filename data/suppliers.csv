@@ -1,0 +1,4 @@
+id,name,country,practices,certs,policy
+SUP001,La Ferme Locale,FR,"agroecology;pasture","AB;HVE","https://example.org/policy"
+SUP002,Viandes SA,FR,"intensive","", "https://example.org/policy"
+SUP003,Céréales & Légumineuses,FR,"rotation","EQ;FAIR","https://example.org/policy"

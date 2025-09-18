@@ -1,0 +1,20 @@
+{
+  "$id": "lca.schema.json",
+  "type": "object",
+  "required": [
+    "ref",
+    "category",
+    "impacts"
+  ],
+  "properties": {
+    "ref": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "impacts": {
+      "type": "object"
+    }
+  }
+}

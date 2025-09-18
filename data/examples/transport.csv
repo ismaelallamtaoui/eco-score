@@ -1,0 +1,3 @@
+gtin,mode,km,emissionFactor
+5412345678902,truck,600,0.0007
+5412345678902,ship,1200,0.0001

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Panier — Meta‑Score</title>
+  <link rel="stylesheet" href="../public/style.css">
+</head>
+<body>
+<header class="container">
+  <h1>Panier</h1>
+  <nav>
+    <a href="../">Accueil</a>
+    <a href="../compare/">Comparer</a>
+  </nav>
+</header>
+
+<main class="container">
+  <section class="card">
+    <h2>Contenu du panier</h2>
+    <table id="basketTable">
+      <thead><tr><th>GTIN</th><th>Nom</th><th>Quantité</th><th>kgCO₂e</th><th>Eau (L)</th><th>Score</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>Impact cumulé (mois)</h2>
+    <div id="totals"></div>
+    <div id="suggestions" class="hint"></div>
+  </section>
+</main>
+
+<script type="module" src="./basket.js"></script>
+</body>
+</html>
