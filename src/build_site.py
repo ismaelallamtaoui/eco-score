@@ -15,9 +15,9 @@ DATA_DIR = ROOT / "data"
 OUT = ROOT / "site_build"
 
 # BASE_URL est injectée par GitHub Actions ; valeur par défaut pour usage local
-REPO_URL_BASE = os.environ.get("BASE_URL", "https://<ton-user>.github.io/eco-score")
+REPO_URL_BASE = os.environ.get("BASE_URL", "https://<ton-user>.github.io/eco-score").rstrip("/")
 
-# ----- Utilitaires ------------------------------------------------------------
+# ===================== Utilitaires robustes ==================================
 def ensure_dirs():
     (OUT / "p").mkdir(parents=True, exist_ok=True)
     (OUT / "qr").mkdir(parents=True, exist_ok=True)
@@ -57,7 +57,11 @@ def normalize(value, vmin, vmax):
     return clamp01((value - vmin) / (vmax - vmin))
 
 def auto_bounds(series: pd.Series, low=0.05, high=0.95):
-    q = series.quantile([low, high]).values
+    s = pd.to_numeric(series, errors="coerce").dropna()
+    if s.empty:
+        # Bornes “fallback” si aucune donnée exploitable
+        return 0.0, 1.0
+    q = s.quantile([low, high]).values
     return float(q[0]), float(q[1])
 
 def load_config():
@@ -70,8 +74,36 @@ def score_row(row, weights, bounds, grade_bands):
     b = normalize(row["biodiversity_risk"], *bounds["biodiversity_risk"])
     impact = weights["emissions"]*e + weights["distance"]*d + weights["biodiversity"]*b
     score100 = round(100*(1 - impact), 1)
-    grade = next(g for g, cut in grade_bands if score100 >= cut)
-    return score100, grade
+    # grade_bands attendu trié décroissant: [("A",90),("B",75),...]
+    for g, cut in grade_bands:
+        if score100 >= cut:
+            return score100, g
+    return score100, grade_bands[-1][0] if grade_bands else "E"
+
+# -------- Helpers robustes sur DataFrames ------------------------------------
+def coerce_id(df: pd.DataFrame, name: str) -> pd.DataFrame:
+    """
+    - Si 'id' absent mais 'gtin' présent, utilise gtin comme id.
+    - Force 'id' en string sans espaces.
+    """
+    if "id" not in df.columns:
+        if "gtin" in df.columns:
+            df = df.rename(columns={"gtin": "id"})
+        else:
+            # Génère un id si vraiment rien (ligne + hash simple)
+            df = df.copy()
+            df["id"] = [f"{name}_{i}" for i in range(len(df))]
+    df["id"] = df["id"].astype(str).str.strip()
+    return df
+
+def ensure_numeric(df: pd.DataFrame, col: str, default: float = 0.0) -> pd.DataFrame:
+    """
+    Crée la colonne si absente, convertit en float, remplace NaN par défaut.
+    """
+    if col not in df.columns:
+        df[col] = default
+    df[col] = pd.to_numeric(df[col], errors="coerce").fillna(default).astype(float)
+    return df
 
 # ----- Templates HTML ---------------------------------------------------------
 def product_page_html(item, meta):
@@ -140,41 +172,71 @@ q.addEventListener('input', () => {{
 </script>
 </body></html>"""
 
-# ----- Main build -------------------------------------------------------------
+# ============================= Main build ====================================
 def main():
     ensure_dirs()
     write_style()
 
-    # 1) Validation des données (raise explicite si problème)
+    # 1) Validation / chargement
     p, a, d, b = V.load_all()
+
+    # 1.b) Robustesse des clés: forcer 'id' en str partout, fallback sur 'gtin' pour p
+    p = coerce_id(p, "products")
+    a = coerce_id(a, "agribalyse")
+    d = coerce_id(d, "distances")
+    b = coerce_id(b, "biodiv")
+
+    # 1.c) Colonnes numériques minimales (créées si absentes + cast float)
+    #    - a: kgco2e_unit
+    #    - d: distance_km
+    #    - b: biodiversity_risk
+    a = ensure_numeric(a, "kgco2e_unit", 0.0)
+    d = ensure_numeric(d, "distance_km", 0.0)
+    b = ensure_numeric(b, "biodiversity_risk", 0.0)
 
     # 2) Config (poids, bornes, bandes, méta)
     cfg = load_config()
-    weights = cfg["weights"]
-    grade_bands = cfg["grade_bands"]
-    bounds = cfg["bounds"]
+    weights = cfg.get("weights", {"emissions": 0.5, "distance": 0.3, "biodiversity": 0.2})
+    grade_bands = cfg.get("grade_bands", [("A", 90), ("B", 75), ("C", 60), ("D", 45), ("E", 0)])
+    bounds = cfg.get("bounds", {})
 
-    # 3) Fusion
-    df = (p.merge(a, on="id", how="left")
-            .merge(d, on="id", how="left")
-            .merge(b, on="id", how="left"))
+    # 3) Fusions robustes (toutes les clés en str)
+    p["id"] = p["id"].astype(str)
+    a["id"] = a["id"].astype(str)
+    d["id"] = d["id"].astype(str)
+    b["id"] = b["id"].astype(str)
+
+    df = (p.merge(a[["id", "kgco2e_unit"]], on="id", how="left")
+            .merge(d[["id", "distance_km"]], on="id", how="left")
+            .merge(b[["id", "biodiversity_risk"]], on="id", how="left"))
+
+    # 3.b) Renommage standard
     df = df.rename(columns={"kgco2e_unit": "base_kgco2e"})
 
-    # 4) Bornes automatiques si manquantes (percentiles 5–95)
+    # 3.c) Valeurs par défaut si NaN après merge
+    df = ensure_numeric(df, "base_kgco2e", 0.0)
+    df = ensure_numeric(df, "distance_km", 0.0)
+    df = ensure_numeric(df, "biodiversity_risk", 0.0)
+
+    # 4) Bornes auto si manquantes (percentiles 5–95)
     for key in ["base_kgco2e", "distance_km", "biodiversity_risk"]:
         v = bounds.get(key, None)
         if (not v) or (v[0] is None) or (v[1] is None):
-            bounds[key] = list(auto_bounds(df[key].astype(float)))
+            bounds[key] = list(auto_bounds(df[key]))
 
     # 5) Génération pages + QR + manifest
     records = []
+    build_time = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+
     for _, r in df.iterrows():
-        slug = slugify(f"{r['id']}-{r['name']}")
+        # sécurise name vide
+        name = str(r.get("name") or r.get("id") or "Produit")
+        slug = slugify(f"{r['id']}-{name}")
         score100, grade = score_row(r, weights, bounds, grade_bands)
         url = f"{REPO_URL_BASE}/p/{slug}/"
         rec = {
-            "id": r["id"],
-            "name": r["name"],
+            "id": str(r["id"]),
+            "name": name,
             "slug": slug,
             "url": url,
             "score": score100,
@@ -188,19 +250,19 @@ def main():
 
         dest_dir = OUT / "p" / slug
         dest_dir.mkdir(parents=True, exist_ok=True)
-        meta = cfg["meta"] | {"build_time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+        meta = (cfg.get("meta", {}) | {"build_time": build_time})
         (dest_dir / "index.html").write_text(product_page_html(rec, meta), encoding="utf-8")
         make_qr(url, OUT / "qr" / f"{slug}.png")
 
     manifest = {
         "records": records,
         "meta": {
-            "build_time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            "method_version": cfg["meta"]["method_version"],
+            "build_time": build_time,
+            "method_version": cfg.get("meta", {}).get("method_version", "v1"),
             "data_hash": {
                 str(pth): file_hash(ROOT / pth) for pth in [
                     "data/products.csv", "data/agribalyse.csv", "data/distances.csv", "data/biodiv.csv"
-                ]
+                ] if (ROOT / pth).exists()
             },
             "bounds": bounds,
             "weights": weights
